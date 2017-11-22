@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">XunJian</string>
+
+    <string name="notice">"有新的巡检工单啦！"</string>
 </resources>

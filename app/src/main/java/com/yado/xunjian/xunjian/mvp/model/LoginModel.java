@@ -2,11 +2,15 @@ package com.yado.xunjian.xunjian.mvp.model;
 
 import android.content.Context;
 
+import com.yado.xunjian.xunjian.mvp.model.bean.DownloadProgress;
 import com.yado.xunjian.xunjian.mvp.model.bean.UserInfo;
 import com.yado.xunjian.xunjian.mvp.model.dao.SqlDao;
+import com.yado.xunjian.xunjian.mvp.presenter.LoginListener;
 import com.yado.xunjian.xunjian.mvp.presenter.VisitNetLisenter;
 import com.yado.xunjian.xunjian.mvp.view.activity.BaseActivity;
 import com.yado.xunjian.xunjian.net.MyRetrofit;
+
+import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -17,21 +21,23 @@ import rx.schedulers.Schedulers;
  */
 
 public class LoginModel {
-    public void login(BaseActivity baseActivity, final VisitNetLisenter<String, Throwable> lisenter,
-                      String name, String pwd){
-        Subscriber subscriber = new Subscriber<String>() {
+
+    private Subscriber subscriber;
+
+    public void login(BaseActivity baseActivity, final LoginListener lisenter, String name, String pwd){
+        subscriber = new Subscriber<String>() {
             @Override
             public void onCompleted() {
             }
 
             @Override
             public void onError(Throwable e) {
-                lisenter.visitNetFailed(e);
+                lisenter.failed(e);
             }
 
             @Override
             public void onNext(String s) {
-                lisenter.visitNetSuccess(s);
+                lisenter.success(s);
             }
         };
         baseActivity.addSubscription(subscriber);
@@ -48,6 +54,17 @@ public class LoginModel {
             SqlDao.getInstance(context).updateUserInfo(userInfo);
         }else{
             SqlDao.getInstance(context).insertUserInfo(userInfo);
+        }
+    }
+
+    public List<UserInfo> getUserInfo(Context context){
+        return SqlDao.getInstance(context).queryUserInfo();
+    }
+
+    public void stopThread(){
+        if (subscriber != null){
+            subscriber.unsubscribe();
+            subscriber = null;
         }
     }
 }

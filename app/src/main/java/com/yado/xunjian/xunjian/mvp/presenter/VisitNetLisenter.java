@@ -6,7 +6,8 @@ import android.icu.text.PluralRules;
  * Created by Administrator on 2017/11/17.
  */
 
-public interface VisitNetLisenter<T, G> {
+public interface VisitNetLisenter<T> {
     public void visitNetSuccess(T t);
-    public void visitNetFailed(G g);
+    public void visitNetFailed(T t);
+    public void downloadProgress(T t);
 }

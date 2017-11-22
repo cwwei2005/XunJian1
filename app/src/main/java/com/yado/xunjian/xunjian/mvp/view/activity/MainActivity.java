@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.yado.xunjian.xunjian.R;
 import com.yado.xunjian.xunjian.mvp.view.activity.BaseActivity;
+import com.yado.xunjian.xunjian.myUI.JiaoBiaoUI;
+import com.yado.xunjian.xunjian.service.PollingService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -17,9 +19,9 @@ import butterknife.OnClick;
 public class MainActivity extends BaseActivity {
 
     @BindView(R.id.tv_xianchang_xunjian)
-    TextView tv_xianchang_xunjian;
-    @BindView(R.id.tv_xunjian_task_search)
-    TextView tv_xunjian_task_search;
+    JiaoBiaoUI tv_xianchang_xunjian;
+    @BindView(R.id.tv_XJtaskQuery)
+    TextView tv_XJtaskQuery;
     @BindView(R.id.tv_device_info)
     TextView tv_device_info;
     @BindView(R.id.tv_quexianku_search)
@@ -36,19 +38,27 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
+        startService(new Intent(this, PollingService.class));
     }
 
     @OnClick(R.id.tv_xianchang_xunjian)
     public void tv_xianchang_xunjian(View v){
+        //角标
+//        tv_xianchang_xunjian.getTv_jb().setText("11");
+        Intent intent = new Intent(this, XCXunJianActivity.class);
+        startActivity(intent);
     }
 
-    @OnClick(R.id.tv_xunjian_task_search)
-    public void tv_xunjian_task_search(View v){
+    @OnClick(R.id.tv_XJtaskQuery)
+    public void tvXJtaskQuery(View v){
+        Intent intent = new Intent(this, XJtaskQueryActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.tv_device_info)
     public void tv_device_info(View v){
+        Intent intent = new Intent(this, DeviceInfoActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.tv_quexianku_search)

@@ -5,7 +5,9 @@ import android.support.v7.widget.ListPopupWindow;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import com.yado.xunjian.xunjian.mvp.presenter.IloginPresenter;
 import com.yado.xunjian.xunjian.mvp.presenter.LoginPresenter;
 import com.yado.xunjian.xunjian.myUI.ClearEditText;
 import com.yado.xunjian.xunjian.utils.DialogUtils;
+import com.yado.xunjian.xunjian.utils.LogUtil;
 import com.yado.xunjian.xunjian.utils.ShareprefKey;
 import com.yado.xunjian.xunjian.utils.ShareprefUtils;
 
@@ -47,9 +50,12 @@ public class LoginActivity extends BaseActivity implements IloginView {
     @BindView(R.id.cb_show_pwd)
     CheckBox cb_show_pwd;
 
+    private String TAG = "LoginActivityTAG";
     private IloginPresenter presenter = new LoginPresenter(this);
-    private ListPopupWindow mListPopupWindow;// = new ListPopupWindow(this);//在声明里初始化报错？
+//    private ListPopupWindow mListPopupWindow;// = new ListPopupWindow(this);//在声明里初始化报错？
     private boolean clickOtherArea = false;
+    private List<UserInfo> mUserInfoList = null;
+    private List<String> nameList;
 
     @Override
     protected int getLayoutId() {
@@ -58,22 +64,14 @@ public class LoginActivity extends BaseActivity implements IloginView {
 
     @Override
     protected void initView() {
+        mUserInfoList = presenter.getUserInfo();
         checkEditTextInput();
-        mListPopupWindow = new ListPopupWindow(this);//在声明里初始化报错？
+        initListPopView();
     }
 
     @OnClick(R.id.cb_moreuser)
     public void showMoreUser(View v){
-        if (mListPopupWindow.isShowing() || clickOtherArea){
-            clickOtherArea = false;
-            cb_moreuser.setChecked(false);
-//            mListPopupWindow.dismiss();
-        }else{
-            List<UserInfo> list = new ArrayList<>();
-            list = SqlDao.getInstance(this).queryUserInfo();//数据量大的应该在线程操作
-            cb_moreuser.setChecked(true);
-            showListPopulWindow(list);
-        }
+        showListPopulWindow(mUserInfoList);
     }
 
     @OnClick(R.id.cb_show_pwd)
@@ -89,8 +87,8 @@ public class LoginActivity extends BaseActivity implements IloginView {
     public void btLogin(View v){
         String name = et_name.getText().toString();
         String pwd = et_pwd.getText().toString();
-        if (ShareprefUtils.readString(ShareprefKey.NAME, "").equals(name)
-                && ShareprefUtils.readString(ShareprefKey.PWD, "").equals(pwd)){
+
+        if (SqlDao.getInstance(this).queryUserInfo(new UserInfo(name, pwd)).getPwd().equals(pwd)){
             gotoMainActivity();
         }else{
             presenter.userLogin(name, pwd);
@@ -104,18 +102,15 @@ public class LoginActivity extends BaseActivity implements IloginView {
         finish();
     }
 
-    @Override
-    public void saveUserInfo() {
-//        ShareprefUtils.writeString(ShareprefKey.NAME, et_name.getText().toString());
-//        ShareprefUtils.writeString(ShareprefKey.PWD, et_pwd.getText().toString());
-    }
+//    @Override
+//    public void saveUserInfo() {
+//    }
 
     private void checkEditTextInput(){
-        String name = ShareprefUtils.readString(ShareprefKey.NAME, "");
-        String pwd = ShareprefUtils.readString(ShareprefKey.PWD, "");
-        if (!name.isEmpty() && !pwd.isEmpty()){
-            et_name.setText(name);
-            et_pwd.setText(pwd);
+        if (mUserInfoList != null && mUserInfoList.size() > 0){
+            LogUtil.d(TAG, mUserInfoList.size() + "");
+            et_name.setText(mUserInfoList.get(0).getName());
+            et_pwd.setText(mUserInfoList.get(0).getPwd());
         }
 
         et_name.addTextChangedListener(new TextWatcher() {
@@ -138,6 +133,7 @@ public class LoginActivity extends BaseActivity implements IloginView {
             public void afterTextChanged(Editable s) {
             }
         });
+
         et_pwd.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -159,17 +155,19 @@ public class LoginActivity extends BaseActivity implements IloginView {
             }
         });
 
-        //for debug
-//        et_name.setText("刘洪");
-//        et_pwd.setText("1");
-        //for debug
-
         if (et_name.getText().toString().isEmpty() || et_pwd.getText().toString().isEmpty()){
             bt_login.setEnabled(false);
             bt_login.setBackgroundResource(R.drawable.bg_shape_button_pressed);
         }else{
             bt_login.setEnabled(true);
             bt_login.setBackgroundResource(R.drawable.bg_selector_button_press);
+        }
+    }
+
+    private void initListPopView(){
+        nameList = new ArrayList<>();
+        for (int i=0; i<mUserInfoList.size(); i++){
+            nameList.add(mUserInfoList.get(i).getName());
         }
     }
 
@@ -184,58 +182,46 @@ public class LoginActivity extends BaseActivity implements IloginView {
     }
 
     private void showListPopulWindow(final List<UserInfo> list){
-        List<String> nameList = new ArrayList<>();
-        for (int i=0; i<list.size(); i++){
-            nameList.add(list.get(i).getName());
-        }
-
-        //以下代码点击item没响应
-//        if (mListPopupWindow == null)
-//            mListPopupWindow = new ListPopupWindow(this);
-//        mListPopupWindow.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, nameList));
-//        mListPopupWindow.setAnchorView(et_name);
-//        mListPopupWindow.setModal(true);//设置为true响应物理键
-//        mListPopupWindow.show();
-//
-//        mListPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                et_name.setText(list.get(position).getName());
-//                et_pwd.setText(list.get(position).getPwd());
-//                hindListPopulWindow();
-//            }
-//        });
-//        mListPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                cb_moreuser.setChecked(false);
-//            }
-//        });
-
-        mListPopupWindow.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, nameList));
-
+        final ListPopupWindow listPopupWindow = new ListPopupWindow(this);
+        // ListView适配器
+        listPopupWindow.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, nameList));
         // 选择item的监听事件
-        mListPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+                listPopupWindow.dismiss();
                 et_name.setText(list.get(pos).getName());
                 et_pwd.setText(list.get(pos).getPwd());
-                mListPopupWindow.dismiss();
                 if (cb_moreuser.isChecked())
                     cb_moreuser.setChecked(false);
+                //强制隐藏键盘
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(et_name.getWindowToken(), 0);
             }
         });
         //监听点击其它区域
-        mListPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        listPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 cb_moreuser.setChecked(false);
-                clickOtherArea = true;
+//                clickOtherArea = true;
             }
         });
-        mListPopupWindow.setAnchorView(et_name);
-        mListPopupWindow.setModal(false);
-        mListPopupWindow.show();
+        //注意：不能放在setOnItemClickListener之前，否则监听不到点击
+        listPopupWindow.setAnchorView(et_name);
+        listPopupWindow.setModal(false);
+        listPopupWindow.show();
+    }
+
+    private void release(){
+        mUserInfoList = null;
+        nameList = null;
+        presenter.stopThread();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        release();
     }
 }

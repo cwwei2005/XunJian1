@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_nfc"
+        android:title="NFC扫描"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_qrcode"
+        android:title="二维码扫描"
+        app:showAsAction="never"/>
+
+</menu>

@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_marginBottom="100dp"
         android:layout_alignParentBottom="true"
-        android:padding="10dp"
+        android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -18,7 +18,7 @@
                 style="@style/CleanEditText"
                 android:layout_centerInParent="true"
                 android:hint="用户名"
-                android:drawableLeft="@drawable/ic_clear_edittext"
+                android:drawableLeft="@drawable/ic_people"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"/>
             <CheckBox
@@ -46,7 +46,7 @@
                 style="@style/CleanEditText"
                 android:inputType="textPassword"
                 android:hint="密码"
-                android:drawableLeft="@drawable/ic_clear_edittext"
+                android:drawableLeft="@drawable/ic_lock"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"/>
             <CheckBox

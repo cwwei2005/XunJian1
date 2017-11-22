@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_search"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="3dp">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/ll_unfinish"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <com.viewpagerindicator.TabPageIndicator
+                android:id="@+id/tab"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/colorBg"
+                android:theme="@style/StyledIndicators"/>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+            <RadioButton
+                android:id="@+id/rb_unfinish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未完成"
+                android:background="@drawable/bg_selector_left_textview_press"
+                android:padding="8dp"
+                android:textColor="@color/colorBg"
+                android:button="@null"/>
+            <RadioButton
+                android:id="@+id/rb_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已完成"
+                android:background="@drawable/bg_selector_right_textview_press"
+                android:padding="8dp"
+                android:textColor="@color/colorBg"
+                android:button="@null"/>
+        </RadioGroup>
+    </RelativeLayout>
+
+</LinearLayout>

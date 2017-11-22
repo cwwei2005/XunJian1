@@ -1,49 +1,86 @@
 apply plugin: 'com.android.application'
 
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
 android {
+//    signingConfigs {
+//        config {
+//            keyAlias 'cwwei'
+//            keyPassword '123456'
+//            storeFile file('E:/Androidsdk/XunjianKey.jks')
+//            storePassword '8393566'
+//        }
+//    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.yado.xunjian.xunjian"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+
+    productFlavors{
+        myApk{}
+    }
+//    android.applicationVariants.all { variant ->
+//        variant.outputs.each { output ->
+//            def outputFile = output.outputFile
+//            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//                //这里修改apk文件名
+//                def fileName = "demo_${variant.productFlavors[0].name}-${defaultConfig.versionCode}-${defaultConfig.versionName}-${releaseTime() }.apk"
+//                output.outputFile = new File(outputFile.parent, fileName)
+//            }
+//        }
+//    }
+    //Android Studio3.0 Gradle 3.0.0版本
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${variant.name}-${variant.versionName}.apk"
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
     //butterknife
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
     //rxjava
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'io.reactivex:rxandroid:1.1.0' // RxAndroid
-    compile 'io.reactivex:rxjava:1.1.0' // 推荐同时加载RxJava
-
+    compile 'io.reactivex:rxandroid:1.1.0'
+    // RxAndroid
+    compile 'io.reactivex:rxjava:1.1.0'
+    // 推荐同时加载RxJava
     //leakcanary
     compile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-
     //retrofit2，三个包版本号要一样？
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     compile 'com.squareup.retrofit2:converter-scalars:2.0.2'
-
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.4.1'
+    //recyclerview
+    compile 'com.android.support:recyclerview-v7:22.1.0'
+    //viewpager+fragment
+    compile 'com.inkapplications.viewpageindicator:library:2.4.3'
+    //    compile 'com.github.elevenetc:badgeview:v1.0.0'
+    //qrcode
+    compile 'com.journeyapps:zxing-android-embedded:3.3.0'
 }

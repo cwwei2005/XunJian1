@@ -8,5 +8,5 @@ public interface IloginView {
     public void showLoginDialog();
     public void hindLoginDialog();
     public void gotoMainActivity();
-    public void saveUserInfo();
+//    public void saveUserInfo();
 }

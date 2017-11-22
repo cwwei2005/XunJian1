@@ -1,5 +1,7 @@
 package com.yado.xunjian.xunjian.service;
 
+import com.yado.xunjian.xunjian.mvp.model.bean.VersionInfo;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -15,20 +17,16 @@ import rx.Observable;
 
 public interface NetApiService {
 
-    @GET("/")////http://113.106.90.51:8008/App/AppUserInfo
-    Observable<String> getVersion();
+    @GET("/version.txt")////http://113.106.90.51:8008/App/AppUserInfo
+    Observable<VersionInfo> getVersion();//获取服务器文件的内容
 
-    @GET("http://gyxz.exmmw.cn/a3/rj_lb1/fkcdy.apk")//静态获取
+    @GET("/app-release.apk")//静态获取
     Call<ResponseBody> downloadApk();
 
     @GET//动态获取
-    Observable<ResponseBody> downloadApk(@Url String fileUrl);
+    Call<ResponseBody> downloadApk(@Url String fileUrl);
 
     @FormUrlEncoded
     @POST("/App/AppUserInfo")////http://113.106.90.51:8008/App/AppUserInfo
     Observable<String> userLogin(@Field("Username") String Username, @Field("UserPassWord") String UserPassWord);
-
-//    @FormUrlEncoded
-//    @POST("/login")////http://113.106.90.51:8008/App/AppUserInfo
-//    Observable<String> userLogin(@Field("Username") String Username, @Field("UserPassWord") String UserPassWord);
 }

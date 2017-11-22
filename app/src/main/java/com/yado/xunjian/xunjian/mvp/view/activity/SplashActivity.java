@@ -29,7 +29,7 @@ public class SplashActivity extends BaseActivity implements IsplashView {
     ProgressBar pb;
 
     private boolean hasNewVersion = false;
-    private IsplashPresenter persenter = new SplashPersenter(this);
+    private IsplashPresenter persenter = new SplashPersenter(this);//persenter<->view 接口形式交互数据
     private ProgressDialog mPd;
 
     @Override
@@ -44,9 +44,13 @@ public class SplashActivity extends BaseActivity implements IsplashView {
         refWatcher.watch(this);
 
         welcomeAnimation();
-        persenter.downloadApk();//需要获取数据才能操作UI的，用presenter
+        persenter.getNewVersion();//需要获取数据才能操作UI的，用presenter
+        mPd = new ProgressDialog(this);
     }
 
+    /**
+     * 欢迎动画
+     */
     private void welcomeAnimation(){
         AnimationSet animationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.set_animation);
         iv.startAnimation(animationSet);
@@ -71,7 +75,8 @@ public class SplashActivity extends BaseActivity implements IsplashView {
         });
     }
 
-    private void gotoLogin(){
+    @Override
+    public void gotoLogin(){
         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
@@ -87,6 +92,7 @@ public class SplashActivity extends BaseActivity implements IsplashView {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                pb.setVisibility(View.GONE);
                 persenter.downloadApk();
             }
         });
@@ -106,13 +112,13 @@ public class SplashActivity extends BaseActivity implements IsplashView {
     }
 
     @Override
-    public void showDownloadProgressDialog(int max) {
-        mPd = new ProgressDialog(this);
-        mPd.setProgress(0);
+    public void showDownloadProgressDialog(long currentProgress, long max) {
+//        mPd = new ProgressDialog(this);
+        mPd.setProgress((int) currentProgress);
         mPd.setTitle("下载进度");
         mPd.setCancelable(false);
         mPd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mPd.setMax(100);
+        mPd.setMax((int) max);
         mPd.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -125,13 +131,12 @@ public class SplashActivity extends BaseActivity implements IsplashView {
     }
 
     @Override
-    public void updateDownloadProgress(int progress) {
-        mPd.setProgress(progress);
+    public void updateDownloadProgress(long progress) {
+        mPd.setProgress((int) progress);
     }
 
     @Override
     public void hindDownloadProgressDialog() {
-
     }
 
     @Override
@@ -161,5 +166,11 @@ public class SplashActivity extends BaseActivity implements IsplashView {
             }
         });
         builder.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        persenter.stopThread();
     }
 }

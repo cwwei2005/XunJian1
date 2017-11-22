@@ -9,9 +9,13 @@ import android.util.Log;
 
 import com.yado.xunjian.xunjian.MyApplication;
 import com.yado.xunjian.xunjian.mvp.model.SplashModel;
+import com.yado.xunjian.xunjian.mvp.model.bean.DownloadProgress;
+import com.yado.xunjian.xunjian.mvp.model.bean.VersionInfo;
 import com.yado.xunjian.xunjian.mvp.view.activity.BaseActivity;
 import com.yado.xunjian.xunjian.mvp.view.activity.IsplashView;
+import com.yado.xunjian.xunjian.utils.LogUtil;
 import com.yado.xunjian.xunjian.utils.ToastUtils;
+import com.yado.xunjian.xunjian.utils.VersionUtils;
 
 import java.io.File;
 
@@ -23,10 +27,12 @@ import okhttp3.ResponseBody;
 
 public class SplashPersenter implements IsplashPresenter{
 
-    private IsplashView view = null;
+    private IsplashView view = null;//接口交互数据
     private SplashModel model = new SplashModel();
     private BaseActivity activity;
     private Handler handler = new Handler();
+    private long downloadTotal = 0;
+    private String apkUrl = "";
 
     //构造函数，activity view创建实例时传入presenter
     public SplashPersenter(IsplashView view) {
@@ -36,59 +42,53 @@ public class SplashPersenter implements IsplashPresenter{
 
     @Override
     public void getNewVersion() {
-        if (new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/app-debug.apk").exists()){
-            view.setHasNewVersion(true);
-        }else{
-            model.getNewVersion(activity, new VisitNetLisenter<String, Throwable>() {
-                @Override
-                public void visitNetSuccess(String s) {
-                    Log.d("tag",s);
-                    if (/*Float.parseFloat(s) > Float.parseFloat(VersionUtils.getVersion())*/true){//debug
-//                    view.showUpdateTipsDialog();
-                        if (s.contains("错误")){
-                            ToastUtils.show(s);
-                        }else{
-                            view.setHasNewVersion(true);
-                        }
-                    }
+        model.getVersion(activity, new GetVersionListener() {
+            @Override
+            public void success(VersionInfo versionInfo) {
+                LogUtil.d("SplashActivityTag",versionInfo.getVersion());
+                if (versionInfo.getVersion().equals(VersionUtils.getVersion())){
+                    ToastUtils.show(versionInfo.getVersion());
+                }else{
+                    view.setHasNewVersion(true);
+                    apkUrl = versionInfo.getApkUrl();
                 }
+            }
 
-                @Override
-                public void visitNetFailed(Throwable throwable) {
-                    ToastUtils.show("network error");
-                }
-            });
-        }
+            @Override
+            public void failed(Throwable throwable) {
+                view.setHasNewVersion(false);
+            }
+        });
     }
 
     @Override
     public void downloadApk() {
-        model.downloadApk(activity, new VisitNetLisenter<ResponseBody, Throwable>() {
+        model.downloadApk(activity, apkUrl, new DownloadListener() {
             @Override
-            public void visitNetSuccess(ResponseBody s) {
-                view.showDownloadProgressDialog(getApkSize());
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int i=0;//debug
-                        while (getApkSize() > getDownloadSize()+i){
-                            SystemClock.sleep(10);
-                            view.updateDownloadProgress(getDownloadSize()+i++);
-                        }
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //main thread
-                                view.showInstallTipsDialog();
-                            }
-                        });
-                    }
-                }).start();
+            public void result(boolean b) {
+                if (b){
+//                    ToastUtils.show("下载成功");
+                    view.hindDownloadProgressDialog();
+                    view.showInstallTipsDialog();
+                }else{
+                    ToastUtils.show("下载失败");
+                    view.gotoLogin();
+                }
             }
 
             @Override
-            public void visitNetFailed(Throwable throwable) {
-                ToastUtils.show("network error");
+            public void progress(final long total, final long pro) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (downloadTotal == 0){
+                            downloadTotal = total;
+                            view.showDownloadProgressDialog(pro, downloadTotal);
+                        }else {
+                            view.updateDownloadProgress(pro);
+                        }
+                    }
+                });
             }
         });
     }
@@ -98,27 +98,17 @@ public class SplashPersenter implements IsplashPresenter{
     }
 
     @Override
-    public int getApkSize() {
-        return 100;
-    }
-
-    @Override
-    public int getDownloadSize() {
-        return 0;
-    }
-
-    @Override
     public void installApk() {
-        Log.d("tag","install");
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/app-debug.apk";
-        File file = new File(path);
+        File file = new File(model.getApkPath());
         Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setDataAndType(Uri.parse("file://"+file.toString()), "application/vnd.android.package-archive");
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);//提示安装失败(-15),-15:是测试安装包的,不支持。
-
-//        activity.finish();
+        activity.startActivity(intent);
         MyApplication.quitApp();
+    }
+
+    @Override
+    public void stopThread() {
+        model.stopThread();
     }
 }

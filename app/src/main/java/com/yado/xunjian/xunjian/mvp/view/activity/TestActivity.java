@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yado.xunjian.xunjian.R;
@@ -21,8 +23,10 @@ import butterknife.OnClick;
 
 public class TestActivity extends BaseActivity {
 
-    @BindView(R.id.bt)
-    Button bt;
+    @BindView(R.id.iv_return)
+    ImageView ivReturn;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
 
     @Override
     protected int getLayoutId() {
@@ -31,43 +35,11 @@ public class TestActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        tvTitle.setText("xxx");
     }
 
-    @OnClick(R.id.bt)
-    public void bt_test(View v){
-        showListPopupWindow(bt);
-    }
-
-    public void showListPopupWindow(View view) {
-        String items[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-        ListPopupWindow listPopupWindow = new ListPopupWindow(this);
-
-        // ListView适配器
-        listPopupWindow.setAdapter(
-                new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, items));
-
-        // 选择item的监听事件
-        listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-                Toast.makeText(getApplicationContext(), "选择:" + pos, Toast.LENGTH_SHORT).show();
-                // listPopupWindow.dismiss();
-            }
-        });
-
-        // 对话框的宽高
-        listPopupWindow.setWidth(500);
-        listPopupWindow.setHeight(600);
-
-        // ListPopupWindow的锚,弹出框的位置是相对当前View的位置
-        listPopupWindow.setAnchorView(view);
-
-        // ListPopupWindow 距锚view的距离
-        listPopupWindow.setHorizontalOffset(50);
-        listPopupWindow.setVerticalOffset(100);
-
-        listPopupWindow.setModal(false);
-
-        listPopupWindow.show();
+    @OnClick(R.id.iv_return)
+    public void ivReturn(){
+        finish();
     }
 }

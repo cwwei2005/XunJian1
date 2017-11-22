@@ -8,7 +8,6 @@ public interface IsplashPresenter {
     public void getNewVersion();
     public void downloadApk();
     public void cleanDownload();
-    public int getApkSize();
-    public int getDownloadSize();
     public void installApk();
+    public void stopThread();
 }

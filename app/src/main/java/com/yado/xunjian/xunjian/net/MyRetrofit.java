@@ -1,7 +1,5 @@
 package com.yado.xunjian.xunjian.net;
 
-import com.yado.xunjian.xunjian.service.NetApiService;
-
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;

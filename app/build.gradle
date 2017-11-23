@@ -1,18 +1,10 @@
 apply plugin: 'com.android.application'
 
 def releaseTime() {
-    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+    return new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone(/*"UTC"*/"Asia/Shanghai"))
 }
 
 android {
-//    signingConfigs {
-//        config {
-//            keyAlias 'cwwei'
-//            keyPassword '123456'
-//            storeFile file('E:/Androidsdk/XunjianKey.jks')
-//            storePassword '8393566'
-//        }
-//    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.yado.xunjian.xunjian"
@@ -21,34 +13,24 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "versionCode"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
     }
-
-    productFlavors{
-        myApk{}
-    }
-//    android.applicationVariants.all { variant ->
-//        variant.outputs.each { output ->
-//            def outputFile = output.outputFile
-//            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//                //这里修改apk文件名
-//                def fileName = "demo_${variant.productFlavors[0].name}-${defaultConfig.versionCode}-${defaultConfig.versionName}-${releaseTime() }.apk"
-//                output.outputFile = new File(outputFile.parent, fileName)
-//            }
-//        }
-//    }
     //Android Studio3.0 Gradle 3.0.0版本
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "${variant.name}-${variant.versionName}.apk"
+            outputFileName = "${variant.name}-xxx-${variant.versionName}}.apk"
+//            outputFileName = "${variant.name}-xxx-${variant.versionName}-${releaseTime()}.apk"
         }
     }
+//    productFlavors {
+//        xiaomi{}
+//    }
 }
 
 dependencies {
@@ -83,4 +65,6 @@ dependencies {
     //    compile 'com.github.elevenetc:badgeview:v1.0.0'
     //qrcode
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
+
+//    compile 'com.github.yalantis:ucrop:2.2.1'
 }

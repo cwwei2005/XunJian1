@@ -16,6 +16,7 @@ import com.yado.xunjian.xunjian.R;
 import com.yado.xunjian.xunjian.mvp.model.bean.GongDanInfo;
 import com.yado.xunjian.xunjian.mvp.view.adapter.TabPageIndicatorAdapter;
 import com.yado.xunjian.xunjian.mvp.view.fragment.QuexianLibFragment;
+import com.yado.xunjian.xunjian.utils.ZoomOutPageTransformer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -93,6 +94,7 @@ public class QueXianLibActivity extends BaseActivity {
         tabList.add("Level-6");
         adapter = new TabPageIndicatorAdapter(getSupportFragmentManager(), fragmentList, tabList);
         vp.setAdapter(adapter);
+        vp.setPageTransformer(true,new ZoomOutPageTransformer());
         //实例化TabPageIndicator，然后与ViewPager绑在一起（核心步骤）
         tab.setViewPager(vp);
 

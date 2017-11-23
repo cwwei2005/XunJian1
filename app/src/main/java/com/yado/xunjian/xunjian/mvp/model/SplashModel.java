@@ -3,16 +3,14 @@ package com.yado.xunjian.xunjian.mvp.model;
 import android.os.Environment;
 import android.util.Log;
 
-import com.yado.xunjian.xunjian.mvp.model.bean.DownloadProgress;
 import com.yado.xunjian.xunjian.mvp.model.bean.VersionInfo;
 import com.yado.xunjian.xunjian.mvp.presenter.DownloadListener;
 import com.yado.xunjian.xunjian.mvp.presenter.GetVersionListener;
-import com.yado.xunjian.xunjian.mvp.presenter.VisitNetLisenter;
 import com.yado.xunjian.xunjian.mvp.view.activity.BaseActivity;
 import com.yado.xunjian.xunjian.net.FileResponseBody;
 import com.yado.xunjian.xunjian.net.MyRetrofit;
 import com.yado.xunjian.xunjian.net.RetrofitCallback;
-import com.yado.xunjian.xunjian.service.NetApiService;
+import com.yado.xunjian.xunjian.net.NetApiService;
 import com.yado.xunjian.xunjian.utils.LogUtil;
 
 import java.io.File;
@@ -23,10 +21,8 @@ import java.io.OutputStream;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

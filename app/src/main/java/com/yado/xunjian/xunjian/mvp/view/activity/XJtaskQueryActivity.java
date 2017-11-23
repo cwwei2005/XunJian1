@@ -1,5 +1,6 @@
 package com.yado.xunjian.xunjian.mvp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,10 +27,15 @@ import android.widget.Toast;
 import com.viewpagerindicator.TabPageIndicator;
 import com.yado.xunjian.xunjian.R;
 import com.yado.xunjian.xunjian.mvp.model.bean.GongDanInfo;
+import com.yado.xunjian.xunjian.mvp.model.bean.UserInfo;
+import com.yado.xunjian.xunjian.mvp.model.dao.SqlDao;
 import com.yado.xunjian.xunjian.mvp.view.adapter.OnItemClickLisenter;
 import com.yado.xunjian.xunjian.mvp.view.adapter.GongDanAdapter;
 import com.yado.xunjian.xunjian.mvp.view.adapter.TabPageIndicatorAdapter;
 import com.yado.xunjian.xunjian.mvp.view.fragment.UnFinishGongDanFragment;
+import com.yado.xunjian.xunjian.utils.DepthPageTransformer;
+import com.yado.xunjian.xunjian.utils.DialogUtils;
+import com.yado.xunjian.xunjian.utils.ZoomOutPageTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +53,8 @@ public class XJtaskQueryActivity extends BaseActivity {
     ImageView tv_back;
     @BindView(R.id.actv_query)
     AutoCompleteTextView autoCompleteTv;
-//    @BindView(R.id.tv_search)
-//    TextView tv_search;
+//    @BindView(R.id.iv_search)
+//    TextView iv_search;
     @BindView(R.id.rg)
     RadioGroup rg;
     @BindView(R.id.rb_unfinish)
@@ -110,6 +118,23 @@ public class XJtaskQueryActivity extends BaseActivity {
                 imm.hideSoftInputFromWindow(autoCompleteTv.getWindowToken(), 0);
             }
         });
+        autoCompleteTv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                /*判断是否是“GO”键*/
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    /*隐藏软键盘*/
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+                    }
+                    //goto
+//                    DialogUtils
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void initUnfinish() {
@@ -119,6 +144,7 @@ public class XJtaskQueryActivity extends BaseActivity {
         list.add(new UnFinishGongDanFragment(this));
         FragmentStatePagerAdapter adapter = new TabPageIndicatorAdapter(getSupportFragmentManager(), list);
         vp.setAdapter(adapter);
+        vp.setPageTransformer(true,new DepthPageTransformer());
         //实例化TabPageIndicator，然后与ViewPager绑在一起（核心步骤）
         tab.setViewPager(vp);
 

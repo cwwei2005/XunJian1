@@ -1,18 +1,22 @@
 package com.yado.xunjian.xunjian.mvp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.ListPopupWindow;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yado.xunjian.xunjian.MyApplication;
@@ -152,6 +156,30 @@ public class LoginActivity extends BaseActivity implements IloginView {
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+        et_pwd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                /*判断是否是“GO”键*/
+                if(actionId == EditorInfo.IME_ACTION_GO){
+                    /*隐藏软键盘*/
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+                    }
+                    //goto login
+                    String name = et_name.getText().toString();
+                    String pwd = et_pwd.getText().toString();
+
+                    if (SqlDao.getInstance(LoginActivity.this).queryUserInfo(new UserInfo(name, pwd)).getPwd().equals(pwd)){
+                        gotoMainActivity();
+                    }else{
+                        presenter.userLogin(name, pwd);
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 

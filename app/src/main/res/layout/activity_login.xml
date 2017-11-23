@@ -20,7 +20,9 @@
                 android:hint="用户名"
                 android:drawableLeft="@drawable/ic_people"
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:singleLine="true"
+                android:imeOptions="actionNext"/>
             <CheckBox
                 android:id="@+id/cb_moreuser"
                 android:layout_width="wrap_content"
@@ -28,7 +30,7 @@
                 android:background="@drawable/selector_more"
                 android:button="@null"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5dp" />
         </LinearLayout>
 
         <View
@@ -48,7 +50,9 @@
                 android:hint="密码"
                 android:drawableLeft="@drawable/ic_lock"
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:singleLine="true"
+                android:imeOptions="actionGo"/>
             <CheckBox
                 android:id="@+id/cb_show_pwd"
                 android:layout_width="wrap_content"

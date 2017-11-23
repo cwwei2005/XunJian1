@@ -2,8 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ddd">
+    android:orientation="vertical">
 
     <include layout="@layout/title_main"/>
 
@@ -13,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@color/colorWhite"
+        android:background="#ddd"
         android:hint="搜索"
         android:textSize="15dp"
         android:padding="10dp"
@@ -25,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:background="@color/colorBg"
         android:theme="@style/StyledIndicators"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/vp"

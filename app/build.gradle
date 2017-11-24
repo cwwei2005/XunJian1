@@ -67,4 +67,5 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
 
 //    compile 'com.github.yalantis:ucrop:2.2.1'
+//    compile 'cn.finalteam.rxgalleryfinal:library:1.1.3'
 }

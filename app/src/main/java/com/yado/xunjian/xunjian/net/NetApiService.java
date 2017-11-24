@@ -31,7 +31,7 @@ public interface NetApiService {
     Call<ResponseBody> downloadApk(@Url String fileUrl);
 
     @Multipart
-    @POST("Tomcat7")
+    @POST("/TomcatTest/com/UploadServlet")
     Call<ResponseBody> upload(@Part RequestBody file);
 
     @FormUrlEncoded

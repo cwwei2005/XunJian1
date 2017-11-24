@@ -1,38 +1,37 @@
 package com.yado.xunjian.xunjian.mvp.view.activity;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.yado.xunjian.xunjian.R;
-import com.yado.xunjian.xunjian.net.MyRetrofit;
-import com.yado.xunjian.xunjian.net.NetApiService;
+import com.yado.xunjian.xunjian.utils.MediaUtil;
+import com.yado.xunjian.xunjian.utils.UploadUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
@@ -41,7 +40,6 @@ import okio.Sink;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.adapter.rxjava.Result;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -55,18 +53,28 @@ public class QueXianDetailActivity extends BaseActivity {
     TextView tvTitle;
     @BindView(R.id.bt_add_file)
     Button bt_add_file;
-    @BindView(R.id.bt_add_text)
-    Button bt_add_text;
     @BindView(R.id.bt_upload)
     Button bt_upload;
     @BindView(R.id.bt_take_photo)
     Button bt_take_photo;
     @BindView(R.id.bt_add_photo)
     Button bt_add_photo;
+    @BindView(R.id.bt_recorder)
+    Button bt_recorder;
+    @BindView(R.id.bt_play_recorder)
+    Button bt_play_recorder;
+    @BindView(R.id.bt_video)
+    Button bt_video;
+    @BindView(R.id.bt_play_video)
+    Button bt_play_video;
     @BindView(R.id.iv)
     ImageView iv;
     @BindView(R.id.tv)
     TextView tv;
+    @BindView(R.id.surfaceView)
+    SurfaceView surfaceView;
+    @BindView(R.id.videoView)
+    VideoView videoView;
 
     private String filePath;
     private final static int TAKE_PHOTO = 1;
@@ -74,7 +82,10 @@ public class QueXianDetailActivity extends BaseActivity {
     private final static int TAKE_CROP = 3;
     private static final int IMAGE_REQUEST_CODE = 4;
     private static final int SELECT_PIC_KITKAT = 5;
+    private static final int VIDEO_BACK = 6;
     private Uri imageUri;
+    private String vedioName;
+    private String vedioName1;
 
     @Override
     protected int getLayoutId() {
@@ -100,50 +111,54 @@ public class QueXianDetailActivity extends BaseActivity {
     @OnClick(R.id.bt_take_photo)
     public void bt_take_photo(){
         File file = new File(Environment.getExternalStorageDirectory(), "hello.png");
-        imageUri = Uri.fromFile(file);
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, TAKE_PHOTO);
+        imageUri = MediaUtil.openCamera(this, file, TAKE_PHOTO);
     }
 
     @OnClick(R.id.bt_add_photo)
     public void bt_add_photo(){
         File file = new File(Environment.getExternalStorageDirectory(), "hello_choose.jpg");//用于存储选择的照片
-        try {
-            if (file.exists()){
-                file.delete();
-            }
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        imageUri = Uri.fromFile(file);
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");//系统图库
-//        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");//图片选择器
-        intent.putExtra("crop", true);//允许缩放和裁剪、图片的输出位置
-        intent.putExtra("scale", true);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        intent.setAction(Intent.ACTION_PICK);
-        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, TAKE_GALLERY);
+        MediaUtil.openGallery(this, file, imageUri, TAKE_GALLERY);
     }
 
     @OnClick(R.id.bt_add_file)
     public void bt_add_file(){
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("image/*");//选择图片
-//        intent.setType("audio/*"); //选择音频
-//        intent.setType("video/*"); //选择视频 （mp4 3gp 是android支持的视频格式）
-//        intent.setType("video/*;image/*");//同时选择视频和图片
-        intent.setType("*/*");//无类型限制
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 1);
+        //打开文件管理器
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+////        intent.setType("image/*");//选择图片
+////        intent.setType("audio/*"); //选择音频
+////        intent.setType("video/*"); //选择视频 （mp4 3gp 是android支持的视频格式）
+////        intent.setType("video/*;image/*");//同时选择视频和图片
+//        intent.setType("*/*");//无类型限制
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        startActivityForResult(intent, 1);
+
+        MediaUtil.stopRecording();
     }
 
-    @OnClick(R.id.bt_add_text)
-    public void bt_add_text(){
-//        finish();
+    @OnClick(R.id.bt_recorder)
+    public void bt_recorder(){
+        String s = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String path = Environment.getExternalStorageDirectory()+"/"+s+".mp3";
+        MediaUtil.recording(new File(path));
+    }
+
+    @OnClick(R.id.bt_play_recorder)
+    public void bt_play_recorder(){
+        String s = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String path = Environment.getExternalStorageDirectory()+"/"+s+".mp3";
+        MediaUtil.playRecording(path);
+    }
+
+    @OnClick(R.id.bt_video)
+    public void bt_video(){
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        vedioName1 = Environment.getExternalStorageDirectory()+"/"+date+".mp4";
+        imageUri = MediaUtil.startVideo(this, new File(vedioName1), VIDEO_BACK);
+    }
+
+    @OnClick(R.id.bt_play_video)
+    public void bt_play_video(){
+        //
     }
 
     @OnClick(R.id.bt_upload)
@@ -186,97 +201,31 @@ public class QueXianDetailActivity extends BaseActivity {
 //        Call<String> call = MyRetrofit.getInstance().getNetApiService().uploadFile(body);
 //        call.enqueue(callback);
 
-        String descriptionString = "This is a description";
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
-        Call<ResponseBody> call = MyRetrofit.getInstance().getNetApiService().upload(description);
-        call.enqueue(new Callback<ResponseBody>() {
+//        String descriptionString = "This is a description";
+//        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+//        Call<ResponseBody> call = MyRetrofit.getInstance().getNetApiService().upload(description);
+//        call.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                Log.d("tag","xxx");
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                Log.d("tag","xxx");
+//            }
+//        });
+
+        final File file = new File(Environment.getExternalStorageDirectory(), "hello_choose.jpg");
+        final String url = "http://192.168.0.109:8080/TomcatTest/com/UploadServlet";//注意上传的url
+//        final String url = "http://192.168.0.109:8080/TomcatTest/UploadServlet";
+        new Thread(new Runnable(){
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d("tag","xxx");
+            public void run() {
+                int request = UploadUtil.uploadFile(file, url);
+                System.out.println("upload");
             }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("tag","xxx");
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (data == null)
-//            return;
-        switch (requestCode){
-            case TAKE_PHOTO://拍照返回
-                if (resultCode == RESULT_OK){
-                    startImageZoom(imageUri);
-                }
-                break;
-            case TAKE_GALLERY://相册返回
-                if (resultCode == RESULT_OK){
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT){
-                        Intent intent = new Intent("com.android.camera.action.CROP");
-                        intent.setDataAndType(data.getData(), "image/*");
-                        // 可裁剪状态
-                        intent.putExtra("crop", true);
-                        intent.putExtra("scale", true);
-                        intent.putExtra("return-data", false);
-                        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-                        intent.putExtra("noFaceDetection", true);
-                        /** 不用file，直接使用路径，不行 **/
-//                        File file = new File(getBackgroundFilename());
-                        File file = new File(Environment.getExternalStorageDirectory(), "hello_choose.jpg");//和打开相册的一致
-                        Uri uri1 = Uri.fromFile(file);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri1);
-                        startActivityForResult(intent, TAKE_CROP);
-                    }else {
-                        startImageZoom(imageUri);
-                    }
-                }
-                break;
-            case TAKE_CROP://剪裁返回
-                if (resultCode == RESULT_OK){
-                    showImageZoom(imageUri, iv);
-                }
-                break;
-        }
-    }
-
-    private void startImageZoom(Uri imageUri){
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(imageUri, "image/*");
-        intent.putExtra("scale", true);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, TAKE_CROP); // 启动裁剪程序
-    }
-
-    private void showImageZoom(Uri uri, ImageView iv){
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-            iv.setImageBitmap(bitmap); // 将裁剪后的照片显示出来
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getImageThumbnail() {
-        ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, new String[]{
-                MediaStore.Images.Thumbnails.IMAGE_ID,MediaStore.Images.Thumbnails.DATA
-        }, null,null, null);
-        while (cursor.moveToNext()){
-            int imageId = cursor.getInt(0);
-            String thumbnailsPath = cursor.getString(1);
-            Cursor cursor1 = resolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    new String[]{MediaStore.Images.Media.DATA},
-                    MediaStore.Audio.Media._ID+"="+imageId, null, null);
-            while (cursor1.moveToNext()){
-                String s = cursor1.getString(0);
-                Log.d("tag","xxx");
-            }
-            cursor1.close();
-        }
-        cursor.close();
+        }).start();
     }
 
     //首先封装一个RetrofitCallback，用于进度的回调。
@@ -358,4 +307,66 @@ public class QueXianDetailActivity extends BaseActivity {
             };
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (data == null)
+//            return;
+        switch (requestCode){
+            case TAKE_PHOTO://拍照返回
+                if (resultCode == RESULT_OK){
+                    MediaUtil.photoCrop(this, imageUri, TAKE_CROP);
+                }
+                break;
+            case TAKE_GALLERY://相册返回
+                if (resultCode == RESULT_OK){
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT){
+                        imageUri = MediaUtil.photoCrop(this, data, TAKE_CROP);
+                    }else {
+                        MediaUtil.photoCrop(this, imageUri, TAKE_CROP);
+                    }
+                }
+                break;
+            case TAKE_CROP://剪裁返回
+                if (resultCode == RESULT_OK){
+                    iv.setImageBitmap(MediaUtil.getBitmap(this, imageUri));
+                }
+                break;
+            case VIDEO_BACK://视频返回
+                if (resultCode == RESULT_OK) {
+                    // Video captured and saved to fileUri specified in the Intent
+//                    Toast.makeText(this, "Video saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
+                    //Display the video
+//                    videoView.setVideoURI(imageUri);
+//                    videoView.requestFocus();
+                    Bitmap bitmap = MediaUtil.getVideoThumbnail(vedioName1);
+                    iv.setImageBitmap(bitmap);
+                } else if (resultCode == RESULT_CANCELED) {
+                    // User cancelled the video capture
+                } else {
+                    // Video capture failed, advise user
+                }
+                break;
+        }
+    }
+
+//    private void getImageThumbnail() {
+//        ContentResolver resolver = getContentResolver();
+//        Cursor cursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, new String[]{
+//                MediaStore.Images.Thumbnails.IMAGE_ID,MediaStore.Images.Thumbnails.DATA
+//        }, null,null, null);
+//        while (cursor.moveToNext()){
+//            int imageId = cursor.getInt(0);
+//            String thumbnailsPath = cursor.getString(1);
+//            Cursor cursor1 = resolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                    new String[]{MediaStore.Images.Media.DATA},
+//                    MediaStore.Audio.Media._ID+"="+imageId, null, null);
+//            while (cursor1.moveToNext()){
+//                String s = cursor1.getString(0);
+//                Log.d("tag","xxx");
+//            }
+//            cursor1.close();
+//        }
+//        cursor.close();
+//    }
 }

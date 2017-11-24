@@ -18,23 +18,58 @@
                 android:id="@+id/bt_add_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="添加文件"/>
-            <Button
-                android:id="@+id/bt_add_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="添加文本"/>
+                android:text="stop"
+                android:layout_weight="1"/>
             <Button
                 android:id="@+id/bt_take_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="拍照"/>
+                android:text="拍照"
+                android:layout_weight="1"/>
             <Button
                 android:id="@+id/bt_add_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="相册"/>
+                android:text="相册"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/bt_recorder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="录音"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/bt_play_recorder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/bt_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视频"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/bt_play_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放"
+                android:layout_weight="1"/>
         </LinearLayout>
+
+        <SurfaceView
+            android:layout_below="@+id/ll"
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:visibility="gone"/>
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_below="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/iv"
@@ -50,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="添加的文件名"/>
+            android:text="文件名"/>
 
         <Button
             android:id="@+id/bt_upload"

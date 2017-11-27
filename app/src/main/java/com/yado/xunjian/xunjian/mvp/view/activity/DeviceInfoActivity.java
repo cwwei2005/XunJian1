@@ -53,7 +53,7 @@ public class DeviceInfoActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
         ivQrcode.setVisibility(View.VISIBLE);
 //        ivNfc.setVisibility(View.VISIBLE);
 

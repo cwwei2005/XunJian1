@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="38dp"
+    android:background="@color/colorBg">
+
+    <TextView
+        android:id="@+id/tv_return"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_return"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:text=""
+        android:gravity="center"
+        android:background="@drawable/bg_selector_title_press"/>
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/TextView_title_wrapContent"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:text="xxxxxxxxx"
+        android:textColor="@color/colorWhite"/>
+    <AutoCompleteTextView
+        android:id="@+id/actv_query"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:background="@drawable/bg_shape_textview"
+        android:hint="搜索"
+        android:textSize="15dp"
+        android:padding="2dp"
+        android:drawableLeft="@drawable/ic_search"
+        android:drawablePadding="2dp"
+        android:singleLine="true"
+        android:imeOptions="actionSearch"
+        android:visibility="gone"
+        android:textCursorDrawable="@drawable/color_cursor"/>
+    <TextView
+        android:id="@+id/tv_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"
+        android:drawableRight="@drawable/ic_enter"
+        android:text=""
+        android:gravity="center"
+        android:background="@drawable/bg_selector_title_press"/>
+
+</RelativeLayout>

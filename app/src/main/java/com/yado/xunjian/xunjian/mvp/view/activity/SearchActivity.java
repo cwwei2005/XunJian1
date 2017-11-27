@@ -55,7 +55,7 @@ public class SearchActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
     }
 
     @OnClick(R.id.iv_return)

@@ -45,7 +45,7 @@ public class LoginModel {
         MyRetrofit.getInstance().getNetApiService().userLogin(name, pwd)//获取Observable对象
                 .subscribeOn(Schedulers.io())//请求在io线程中执行
                 .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())//最后在主线程中执行
+                .observeOn(AndroidSchedulers.mainThread())//最后(订阅者)在主线程中执行
                 .subscribe(subscriber);//设置订阅者
     }
 
@@ -62,9 +62,9 @@ public class LoginModel {
     }
 
     public void stopThread(){
-        if (subscriber != null){
-            subscriber.unsubscribe();
-            subscriber = null;
-        }
+//        if (subscriber != null){
+//            subscriber.unsubscribe();
+//            subscriber = null;
+//        }
     }
 }

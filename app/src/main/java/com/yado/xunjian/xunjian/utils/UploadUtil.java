@@ -60,7 +60,7 @@ public class UploadUtil {
                  * filename是文件的名字，包含后缀名
                  */
 
-                sb.append("Content-Disposition: form-data; name=\"file\"; filename=\""
+                sb.append("Content-Disposition: form-data; name=\"img\"; filename=\""
                         + file.getName() + "\"" + LINE_END);
                 sb.append("Content-Type: application/octet-stream; charset="
                         + CHARSET + LINE_END);

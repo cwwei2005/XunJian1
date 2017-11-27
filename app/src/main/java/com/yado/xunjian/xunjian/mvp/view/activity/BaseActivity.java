@@ -18,21 +18,24 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected CompositeSubscription mCompositeSubscription = null;
 
     abstract protected int getLayoutId();
-    abstract protected void initView();
+    abstract protected void init();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
-        initView();
+        init();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        release();
         unSubs();
     }
+
+    public void release(){}
 
     /**
      * 防止内存泄漏，将增加的subcription放在CompositeSubscription，activity销毁时统一处理

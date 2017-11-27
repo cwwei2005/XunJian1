@@ -34,18 +34,12 @@ public class TestActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
         tvTitle.setText("xxx");
-
-        init();
     }
 
     @OnClick(R.id.iv_return)
     public void ivReturn(){
         finish();
-    }
-
-    private void init(){
-        String requestURL = "http://172.19.76.105/Secret/com/FileUpload";
     }
 }

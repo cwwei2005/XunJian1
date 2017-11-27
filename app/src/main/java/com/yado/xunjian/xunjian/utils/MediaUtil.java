@@ -83,7 +83,7 @@ public class MediaUtil {
         /** 不用file，直接使用路径，不行 **/
 //        File file = new File(getBackgroundFilename());
         Uri uri1 = Uri.fromFile(mFile);
-        mFile = null;
+//        mFile = null;
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri1);
         activity.startActivityForResult(intent, requestCode);
         return uri1;
@@ -289,6 +289,15 @@ public class MediaUtil {
 //        }
     }
 
+    //获取视频所缩略图
+    public static Bitmap getPhotoThumbnail(String fileName){
+        Bitmap sourceBitmap = BitmapFactory.decodeFile(fileName);
+        int options=(50/sourceBitmap.getHeight()+50/sourceBitmap.getWidth())/2;//类似缩放比
+        Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, 50, 50, options);
+        return bitmap;
+    }
+
+    //获取视频所缩略图
     public static Bitmap getVideoThumbnail(String fileName){
         Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(fileName, MediaStore.Images.Thumbnails.MINI_KIND);
         return bitmap;

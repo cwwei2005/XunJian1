@@ -7,7 +7,7 @@ package com.yado.xunjian.xunjian.mvp.view.activity;
 public interface IsplashView {
     public void showUpdateTipsDialog();
     public void hindUpdateTipsDialog();
-    public void showDownloadProgressDialog(long currentProgress, long max);
+    public void showDownloadProgressDialog(long currentProgress, long total);
     public void updateDownloadProgress(long progress);
     public void hindDownloadProgressDialog();
     public void setHasNewVersion(boolean value);

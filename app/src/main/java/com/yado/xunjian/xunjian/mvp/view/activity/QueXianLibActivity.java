@@ -57,7 +57,7 @@ public class QueXianLibActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
         tvTitle.setText("缺陷库查询");
         initData();
         initLib();

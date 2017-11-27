@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:background="#ddd">
 
-    <include layout="@layout/title_main"/>
+    <include layout="@layout/title_view"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,40 +61,44 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_selector_button_press"
                 android:text="mark"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:visibility="invisible"/>
         </LinearLayout>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible">
+        android:visibility="visible">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="horizontal">
             <Button
                 android:id="@+id/bt_hongwai"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_selector_button_press"
                 android:text="红外采集"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:layout_weight="1"/>
             <Button
                 android:id="@+id/bt_chaobiao"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_selector_button_press"
                 android:text="抄表记录"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:layout_weight="1"/>
             <Button
                 android:id="@+id/bt_hand"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_selector_button_press"
                 android:text="手动填写"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:layout_weight="1"/>
         </LinearLayout>
     </RelativeLayout>
 

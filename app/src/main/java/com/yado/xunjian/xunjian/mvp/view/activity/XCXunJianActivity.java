@@ -1,13 +1,16 @@
 package com.yado.xunjian.xunjian.mvp.view.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yado.xunjian.xunjian.R;
 import com.yado.xunjian.xunjian.mvp.model.bean.GongDanInfo;
@@ -29,14 +32,15 @@ import butterknife.OnClick;
 
 public class XCXunJianActivity extends BaseActivity {
 
-    @BindView(R.id.iv_return)
-    ImageView ivReturn;
+    @BindView(R.id.tv_return)
+    TextView tv_return;
     @BindView(R.id.tv_title)
-    TextView tvTitle;
+    TextView tv_title;
     @BindView(R.id.rv)
     RecyclerView rv;
 
     private List<GongDanInfo> gongDanInfoList;
+    private Handler mHandler = new Handler();
 
     @Override
     protected int getLayoutId() {
@@ -44,25 +48,34 @@ public class XCXunJianActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
-        tvTitle.setText("现场巡检");
+    protected void init() {
+        tv_title.setText("巡检任务巡检任务巡检任务巡检任务");
+        initData();
+        initRecyclerView();
+    }
 
+    private void initData(){
+        //模拟数据
         if (gongDanInfoList == null){
             gongDanInfoList = new ArrayList<>();
         }
-        for (int i=0; i<20; i++){
+        int len = gongDanInfoList.size();
+        for (int i=len; i<len+20; i++){
             gongDanInfoList.add(new GongDanInfo("巡检任务: "+i));
         }
+    }
+
+    private void initRecyclerView(){
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rv.setLayoutManager(layoutManager);
-        final GongDanAdapter adapter = new GongDanAdapter(this, gongDanInfoList);
+        final GongDanAdapter adapter = new GongDanAdapter(this, gongDanInfoList);//数据与adapter要对应
         rv.setAdapter(adapter);
 
         adapter.setOnItemClickLisenter(new OnItemClickLisenter() {
             @Override
             public void onItemClick(View v, int position) {
                 Intent intent = new Intent(XCXunJianActivity.this, GongDanDetailActivity.class);
-                intent.putExtra("posiotn", position);
+                intent.putExtra("gongDanInfo", gongDanInfoList.get(position));
                 startActivity(intent);
             }
 
@@ -85,19 +98,25 @@ public class XCXunJianActivity extends BaseActivity {
                  */
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount() && !isLoading) {
                     //到达底部之后如果footView的状态不是正在加载的状态,就将 他切换成正在加载的状态
-                    if (/*page < totlePage*/true) {
-                        Log.e("duanlian", "onScrollStateChanged: " + "进来了");
+                    if (gongDanInfoList.size() <= 40) {//读取总条目数，每次加载20条，
                         isLoading = true;
-                        adapter.changeState(1);
-                        new Handler().postDelayed(new Runnable() {
+//                        adapter.changeState(1);
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-//                                getData();
-//                                page++;
+                                initData();
+                                adapter.changeState(1);
+                                isLoading = false;
                             }
-                        }, 2000);
+                        }, 1000);
                     } else {
                         adapter.changeState(2);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+//                                adapter.changeState(3);// 隐藏footview
+                            }
+                        }, 1000);
 
                     }
                 }
@@ -112,17 +131,18 @@ public class XCXunJianActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.iv_return)
-    public void ivReturn(){
+    @OnClick(R.id.tv_return)
+    public void tv_return(){
         finish();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    public void release() {
         if (gongDanInfoList != null){
             gongDanInfoList = null;
+        }
+        if (mHandler != null){
+            mHandler.removeCallbacksAndMessages(null);
         }
     }
 }

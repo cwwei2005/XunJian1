@@ -38,14 +38,13 @@ public class SplashActivity extends BaseActivity implements IsplashView {
     }
 
     @Override
-    protected void initView() {
-        //监视内存泄漏(在初始activity添加)
+    protected void init() {
+        //监视内存泄漏(在启动的activity里添加)
         RefWatcher refWatcher = MyApplication.getRefWatcher(this);
         refWatcher.watch(this);
 
         welcomeAnimation();
-        persenter.getNewVersion();//需要获取数据才能操作UI的，用presenter
-        mPd = new ProgressDialog(this);
+        persenter.getNewVersion();
     }
 
     /**
@@ -85,9 +84,9 @@ public class SplashActivity extends BaseActivity implements IsplashView {
     @Override
     public void showUpdateTipsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("发现新版本啦！");
-        builder.setMessage("是否需要下载？");
-        builder.setCancelable(false);
+        builder.setTitle("发现新版本啦！")
+                .setMessage("是否需要下载？")
+                .setCancelable(false);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -112,13 +111,15 @@ public class SplashActivity extends BaseActivity implements IsplashView {
     }
 
     @Override
-    public void showDownloadProgressDialog(long currentProgress, long max) {
-//        mPd = new ProgressDialog(this);
+    public void showDownloadProgressDialog(long currentProgress, long total) {
+        if (mPd == null){
+            mPd = new ProgressDialog(this);
+        }
         mPd.setProgress((int) currentProgress);
         mPd.setTitle("下载进度");
         mPd.setCancelable(false);
         mPd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mPd.setMax((int) max);
+        mPd.setMax((int) total);
         mPd.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

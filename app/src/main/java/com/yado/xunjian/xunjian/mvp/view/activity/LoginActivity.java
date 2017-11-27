@@ -1,5 +1,6 @@
 package com.yado.xunjian.xunjian.mvp.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.ListPopupWindow;
@@ -54,12 +55,12 @@ public class LoginActivity extends BaseActivity implements IloginView {
     @BindView(R.id.cb_show_pwd)
     CheckBox cb_show_pwd;
 
-    private String TAG = "LoginActivityTAG";
+    private String tag = "LoginActivityTAG";
     private IloginPresenter presenter = new LoginPresenter(this);
 //    private ListPopupWindow mListPopupWindow;// = new ListPopupWindow(this);//在声明里初始化报错？
-    private boolean clickOtherArea = false;
-    private List<UserInfo> mUserInfoList = null;
-    private List<String> nameList;
+    private List<UserInfo> mUserInfoList;
+    private List<String> mNameList;
+    private ProgressDialog mPd;
 
     @Override
     protected int getLayoutId() {
@@ -67,8 +68,8 @@ public class LoginActivity extends BaseActivity implements IloginView {
     }
 
     @Override
-    protected void initView() {
-        mUserInfoList = presenter.getUserInfo();
+    protected void init() {
+        mUserInfoList = presenter.getUserInfo();//从数据库获取用户信息
         checkEditTextInput();
         initListPopView();
     }
@@ -91,8 +92,8 @@ public class LoginActivity extends BaseActivity implements IloginView {
     public void btLogin(View v){
         String name = et_name.getText().toString();
         String pwd = et_pwd.getText().toString();
-
-        if (SqlDao.getInstance(this).queryUserInfo(new UserInfo(name, pwd)).getPwd().equals(pwd)){
+        UserInfo userInfo = SqlDao.getInstance(this).queryUserInfo(new UserInfo(name, pwd));//匹配数据库对应的信息
+        if (userInfo != null && userInfo.getPwd().equals(pwd)){
             gotoMainActivity();
         }else{
             presenter.userLogin(name, pwd);
@@ -101,18 +102,13 @@ public class LoginActivity extends BaseActivity implements IloginView {
 
     @Override
     public void gotoMainActivity(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
-//    @Override
-//    public void saveUserInfo() {
-//    }
-
     private void checkEditTextInput(){
         if (mUserInfoList != null && mUserInfoList.size() > 0){
-            LogUtil.d(TAG, mUserInfoList.size() + "");
+            LogUtil.d(tag, mUserInfoList.size() + "");
             et_name.setText(mUserInfoList.get(0).getName());
             et_pwd.setText(mUserInfoList.get(0).getPwd());
         }
@@ -193,26 +189,38 @@ public class LoginActivity extends BaseActivity implements IloginView {
     }
 
     private void initListPopView(){
-        nameList = new ArrayList<>();
+        if (mNameList == null){
+            mNameList = new ArrayList<>();
+        }else {
+            mNameList.clear();
+        }
         for (int i=0; i<mUserInfoList.size(); i++){
-            nameList.add(mUserInfoList.get(i).getName());
+            mNameList.add(mUserInfoList.get(i).getName());
         }
     }
 
     @Override
     public void showLoginDialog() {
-        DialogUtils.showProgressDialog(this, "正在登陆...");
+        if (mPd != null){
+            mPd = null;
+        }
+        mPd = new ProgressDialog(this);
+        mPd.setCancelable(false);
+        mPd.setMessage("正在登陆...");
+        mPd.show();
     }
 
     @Override
     public void hindLoginDialog() {
-        DialogUtils.hindProgressDialog();
+        if (mPd != null){
+            mPd.dismiss();
+        }
     }
 
     private void showListPopulWindow(final List<UserInfo> list){
         final ListPopupWindow listPopupWindow = new ListPopupWindow(this);
         // ListView适配器
-        listPopupWindow.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, nameList));
+        listPopupWindow.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mNameList));
         // 选择item的监听事件
         listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -232,7 +240,6 @@ public class LoginActivity extends BaseActivity implements IloginView {
             @Override
             public void onDismiss() {
                 cb_moreuser.setChecked(false);
-//                clickOtherArea = true;
             }
         });
         //注意：不能放在setOnItemClickListener之前，否则监听不到点击
@@ -241,15 +248,10 @@ public class LoginActivity extends BaseActivity implements IloginView {
         listPopupWindow.show();
     }
 
-    private void release(){
-        mUserInfoList = null;
-        nameList = null;
-        presenter.stopThread();
-    }
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        release();
+    public void release(){
+        mUserInfoList = null;
+        mNameList = null;
+        presenter.stopThread();
     }
 }

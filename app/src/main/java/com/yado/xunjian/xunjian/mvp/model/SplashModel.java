@@ -68,7 +68,7 @@ public class SplashModel {
                 .subscribe(subscriber);//设置订阅者
     }
 
-    public void downloadApk(BaseActivity baseActivity, String apkUrl, final DownloadListener lisenter){
+    public void downloadApk(BaseActivity baseActivity, String apkUrl, final DownloadListener downloadListener){
         //可以正常下载，但是没有进度提示
 //        Call<ResponseBody> call = MyRetrofit.getInstance().getNetApiService().downloadApk();
 //        call.enqueue(new Callback<ResponseBody>() {
@@ -100,20 +100,19 @@ public class SplashModel {
                 if (response.isSuccessful()) {
                     //server contacted and has file
                     boolean writtenToDisk = writeResponseBodyToDisk(response.body());
-                    lisenter.result(writtenToDisk);
+                    downloadListener.result(writtenToDisk);
                 } else {
-                    Log.d("tag", "server contact failed");
+                    LogUtil.d("tag", "server contact failed");
                 }
             }
 
             @Override
             public void onLoading(long total, long progress) {
-                Log.d("tag", "server contact failed");
-                lisenter.progress(total, progress);
+                downloadListener.progress(total, progress);
             }
         };
 
-        call = getRetrofitService(callback).downloadApk(/*apkUrl*/);//动态地址不行？
+        call = getRetrofitService(callback).downloadApk(apkUrl);
         call.enqueue(callback);
     }
 
@@ -142,7 +141,7 @@ public class SplashModel {
     public boolean writeResponseBodyToDisk(ResponseBody body) {
         try {
             // todo change the file location/name according to your needs
-            apkPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/test_1_0_0.apk";//apk 名+路径
+            apkPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/app-release.apk";//apk 名+路径
             File futureStudioIconFile = new File(apkPath);
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -187,10 +186,10 @@ public class SplashModel {
      * activity退出时，必须要停止线程
      */
     public void stopThread(){
-        if (subscriber != null){
-            subscriber.unsubscribe();
-            subscriber = null;
-        }
+//        if (subscriber != null){
+//            subscriber.unsubscribe();
+//            subscriber = null;
+//        }
         if (call != null){
             call.cancel();
             call = null;

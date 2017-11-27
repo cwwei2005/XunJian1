@@ -20,8 +20,8 @@ import java.util.List;
 
 public class LoginPresenter implements IloginPresenter{
 
-    private IloginView view = null;
-    private LoginModel model = new LoginModel();
+    private IloginView view;
+    private LoginModel model;
     private BaseActivity activity;
     private Handler handler = new Handler();
 
@@ -29,15 +29,15 @@ public class LoginPresenter implements IloginPresenter{
     public LoginPresenter(IloginView view) {
         this.view = view;
         this.activity = (BaseActivity) view;
+        model = new LoginModel();
     }
 
     @Override
     public void userLogin(final String name, final String pwd) {
-        view.showLoginDialog();
-        model.login(activity, new LoginListener() {
+        LoginListener loginListener = new LoginListener() {
             @Override
             public void success(String s) {
-                LogUtil.d("LoginActivityTag",s);
+                LogUtil.d("LoginPresenter",s);
                 view.hindLoginDialog();
                 if (s.contains("错误")){
                     ToastUtils.show(s);
@@ -52,7 +52,9 @@ public class LoginPresenter implements IloginPresenter{
                 ToastUtils.show("network error");
                 view.hindLoginDialog();
             }
-        }, name, pwd);
+        };
+        view.showLoginDialog();
+        model.login(activity, loginListener, name, pwd);
     }
 
     @Override
@@ -63,5 +65,6 @@ public class LoginPresenter implements IloginPresenter{
     @Override
     public void stopThread() {
         model.stopThread();
+        handler.removeCallbacksAndMessages(null);
     }
 }

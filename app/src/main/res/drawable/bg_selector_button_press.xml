@@ -5,7 +5,7 @@
         <shape>
             <!--<solid android:color="#ff6600"/>-->
             <gradient android:startColor="#ff6600"
-                android:endColor="#dd6600"
+                android:endColor="#ffdd00"
                 android:angle="90"/>
             <corners android:radius="8dp"/>
         </shape>
@@ -13,7 +13,9 @@
 
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="#bfbfbf"/>
+            <gradient android:startColor="#808080"
+                android:endColor="#cfcfcf"
+                android:angle="90"/>
             <corners android:radius="8dp"/>
         </shape>
     </item>

@@ -6,10 +6,10 @@
     <LinearLayout
         android:layout_marginBottom="100dp"
         android:layout_alignParentBottom="true"
-        android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="15dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -17,20 +17,14 @@
                 android:id="@+id/et_name"
                 style="@style/CleanEditText"
                 android:layout_centerInParent="true"
-                android:hint="用户名"
                 android:drawableLeft="@drawable/ic_people"
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:singleLine="true"
-                android:imeOptions="actionNext"/>
+                android:imeOptions="actionNext"
+                android:hint="用户名"/>
             <CheckBox
                 android:id="@+id/cb_moreuser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_more"
-                android:button="@null"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp" />
+                style="@style/Checkbox_buttonNull"
+                android:background="@drawable/selector_more"/>
         </LinearLayout>
 
         <View
@@ -44,23 +38,16 @@
             <com.yado.xunjian.xunjian.myUI.ClearEditText
                 android:id="@+id/et_pwd"
                 android:layout_below="@+id/et_name"
-
                 style="@style/CleanEditText"
                 android:inputType="textPassword"
-                android:hint="密码"
                 android:drawableLeft="@drawable/ic_lock"
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:singleLine="true"
-                android:imeOptions="actionGo"/>
+                android:imeOptions="actionGo"
+                android:hint="密码"/>
             <CheckBox
                 android:id="@+id/cb_show_pwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_pwd_show"
-                android:button="@null"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"/>
+                style="@style/Checkbox_buttonNull"
+                android:background="@drawable/selector_pwd_show"/>
         </LinearLayout>
 
         <View
@@ -68,7 +55,7 @@
 
         <Button
             android:id="@+id/bt_login"
-            style="@style/Button_much"
+            style="@style/Button_match_parent"
             android:layout_marginTop="20dp"
             android:text="登   录"
             android:background="@drawable/bg_selector_button_press"/>

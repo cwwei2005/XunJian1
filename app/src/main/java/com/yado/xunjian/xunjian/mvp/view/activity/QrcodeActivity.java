@@ -93,7 +93,7 @@ public class QrcodeActivity extends BaseActivity implements DecoratedBarcodeView
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
     }
 
     @OnClick(R.id.iv_return)

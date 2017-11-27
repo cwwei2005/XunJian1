@@ -25,7 +25,7 @@ public class DeviceDetailActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
         tvTitle.setText("设备详情");
     }
 

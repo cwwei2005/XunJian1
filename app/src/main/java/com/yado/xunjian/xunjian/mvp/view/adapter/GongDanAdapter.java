@@ -26,6 +26,7 @@ public class GongDanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final static int TYPE_FOOTER = 1;//脚布局
     private final static int LOADING_MORE = 1;
     private final static int NO_MORE = 2;
+    private final static int HIDE_FOOTVIEW = 3;
     int footer_state = 1;
 
     public GongDanAdapter(Context context, List<GongDanInfo> list) {
@@ -103,8 +104,8 @@ public class GongDanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     footViewHolder.mProgressBar.setVisibility(View.GONE);
                     footViewHolder.tv_line1.setVisibility(View.VISIBLE);
                     footViewHolder.tv_line2.setVisibility(View.VISIBLE);
-                    footViewHolder.tv_state.setText("我是有底线的");
-                    footViewHolder.tv_state.setTextColor(Color.parseColor("#ff00ff"));
+                    footViewHolder.tv_state.setText("没有更多了");
+//                    footViewHolder.tv_state.setTextColor(Color.parseColor("#ff00ff"));
                     break;
             }
         }
@@ -118,7 +119,7 @@ public class GongDanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (position+1 == getItemCount()){
+        if (position+1 == getItemCount()){//底部时itemview为footview
             return TYPE_FOOTER;
         }else {
             return TYPE_ITEM;

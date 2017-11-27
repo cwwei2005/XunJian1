@@ -19,7 +19,6 @@ public class SqlDao {
     private SQLiteDatabase db;
 
     private SqlDao(Context context) {
-        //init
         SqlHelper sqlHelper = new SqlHelper(context, "sqldb", null, 1);
         db = sqlHelper.getWritableDatabase();
     }
@@ -31,7 +30,6 @@ public class SqlDao {
             }
             return userInfoDao;
         }
-//        return userInfoDao;
     }
 
     //userinfo table
@@ -65,6 +63,7 @@ public class SqlDao {
         return list;
     }
 
+    //查询特定的用户信息
     public UserInfo queryUserInfo(UserInfo data){
         UserInfo userInfo = null;
 
@@ -81,6 +80,4 @@ public class SqlDao {
         cursor.close();
         return userInfo;
     }
-
-    //-------------------------
 }

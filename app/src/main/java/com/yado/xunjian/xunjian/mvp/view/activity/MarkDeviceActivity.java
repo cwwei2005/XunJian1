@@ -25,7 +25,7 @@ public class MarkDeviceActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
         tvTitle.setText("MARK device");
     }
 

@@ -78,7 +78,7 @@ public class XJtaskQueryActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
+    protected void init() {
         initData();
         initSearch();
         initFinish();

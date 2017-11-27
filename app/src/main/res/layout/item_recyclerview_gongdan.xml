@@ -15,12 +15,10 @@
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:gravity="center"
             android:text="xxxxxx"
             android:textColor="@color/colorWhite"
-            android:padding="10dp"
-            android:layout_weight="1"
+            android:padding="8dp"
             android:background="@drawable/bg_textview_press"
             android:drawableRight="@drawable/ic_enter"/>
     </LinearLayout>

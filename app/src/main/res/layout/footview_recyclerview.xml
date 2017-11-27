@@ -16,7 +16,7 @@
             android:layout_width="60dp"
             android:layout_height="1dp"
             android:layout_marginRight="10dp"
-            android:background="#ff00ff"
+            android:background="@color/colorBg"
             android:visibility="gone"/>
 
         <ProgressBar
@@ -37,7 +37,7 @@
             android:layout_width="60dp"
             android:layout_height="1dp"
             android:layout_marginLeft="10dp"
-            android:background="#ff00ff"
+            android:background="@color/colorBg"
             android:visibility="gone"/>
     </LinearLayout>
 

@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yado.xunjian.xunjian.R;
+import com.yado.xunjian.xunjian.mvp.model.bean.GongDanInfo;
 
 import org.w3c.dom.Text;
 
@@ -20,8 +21,8 @@ import butterknife.OnClick;
 
 public class GongDanDetailActivity extends BaseActivity {
 
-    @BindView(R.id.iv_return)
-    ImageView ivReturn;
+    @BindView(R.id.tv_return)
+    TextView tv_return;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.tv_device_name)
@@ -45,18 +46,21 @@ public class GongDanDetailActivity extends BaseActivity {
     @BindView(R.id.rl)
     RelativeLayout rl;
 
+    private GongDanInfo mGongDanInfo;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_gongdan_detail;
     }
 
     @Override
-    protected void initView() {
-        tvTitle.setText("巡检");
+    protected void init() {
+        mGongDanInfo = (GongDanInfo) getIntent().getSerializableExtra("gongDanInfo");//Serializable
+        tvTitle.setText(mGongDanInfo.getText());
     }
 
-    @OnClick(R.id.iv_return)
-    public void ivReturn(){
+    @OnClick(R.id.tv_return)
+    public void tv_return(){
         finish();
     }
 
